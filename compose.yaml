@@ -21,6 +21,7 @@ services:
     depends_on:
       - postgres
       - redis
+    privileged: true
 
   client:
     build:

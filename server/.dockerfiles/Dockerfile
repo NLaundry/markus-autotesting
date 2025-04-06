@@ -31,6 +31,11 @@ RUN apt-get update -y && \
                        libxml2-dev \
                        r-base
 
+RUN add-apt-repository -y ppa:apptainer/ppa
+RUN apt update
+# RUN apt install -y apptainer
+RUN apt install -y apptainer-suid
+
 RUN useradd -ms /bin/bash $LOGIN_USER && \
     usermod -aG sudo $LOGIN_USER && \
     for worker in autotst0 autotst1 autotst2 autotst3; do \
