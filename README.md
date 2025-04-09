@@ -140,6 +140,8 @@ The autotester currently supports testers for the following languages and testin
     - [TestThat](https://testthat.r-lib.org/)
 - `custom`
     - see more information [here](#the-custom-tester)
+- container 
+    - see more information [here](#container-tester)
 
 #### Tester Dependencies
 
@@ -316,3 +318,48 @@ To see which settings *would be* deleted without actually deleting them, use the
 
 Users who try to run tests after the settings have been cleaned up in this manner will see an error message telling them
 that the test settings have expired and prompting them to upload more.
+
+## Container Tester
+
+The container tester works the same as the [custom tester](#the-custom-tester) but runs the test in an apptainer container.
+Instructors may upload their own apptainer container definition file when definining a test. 
+The definition will be built at the time of the first test run.
+
+If no definition file is provided, the autotester will run the test in a default Ubuntu2024 container.
+This image is built at setup time.
+
+### What is Apptainer 
+
+Apptainer is a containerization tool that allows users to create and run containers. 
+It is similar to Docker but is designed to be more secure and easier to use in high-performance computing environments. 
+Apptainer containers are portable, meaning they can be run on any system that has Apptainer installed, regardless of the underlying operating system or hardware.
+
+### Container definition files
+
+Apptainer uses container definition files to build containers. These files are similar to Dockerfiles but have a different syntax.
+A container definition file specifies the base image to use, the packages to install, and any other configuration options needed to create the container.
+
+Example Apptainer Definition file (`container.def`):
+```def
+Bootstrap: docker
+From: ubuntu:22.04
+
+%post
+    apt-get update && apt-get install -y cowsay
+
+%environment
+    export PATH=/usr/games:$PATH
+
+%runscript
+    exec cowsay "Hello from Apptainer!"
+
+%labels
+    Author Nathan Laundry
+    Version v1.0
+```
+This file:
+	•	Uses ubuntu:22.04 as the base
+	•	Installs cowsay
+	•	Adds cowsay to the PATH
+	•	Sets a default command to run cowsay
+	•	Labels the image with metadata
